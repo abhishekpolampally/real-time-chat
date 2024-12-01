@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/ws": "^8.5.13",
-    "typescript": "^5.7.2",
-    "ws": "^8.18.0"
+    "@types/websocket": "^1.0.10",
+    "websocket": "^1.0.34",
+    "zod": "^3.22.4"
   }
 }
