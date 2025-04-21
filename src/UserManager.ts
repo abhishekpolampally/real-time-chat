@@ -63,7 +63,6 @@ export class UserManager {
       if (id === userId) {
         return;
       }
-      console.log("outgoing message " + JSON.stringify(message));
       conn.sendUTF(JSON.stringify(message));
     });
   }
