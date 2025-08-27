@@ -3,7 +3,9 @@ let globalChatId = 0;
 
 export interface Room {
   roomId: string;
-  chats: Chat[];
+  chats: {
+    [key: string]: Chat;
+  };
 }
 
 export class InMemoryStore implements Store {
@@ -16,7 +18,7 @@ export class InMemoryStore implements Store {
   initRoom(roomId: string) {
     this.store.set(roomId, {
       roomId,
-      chats: [],
+      chats: {},
     });
   }
 
@@ -25,7 +27,8 @@ export class InMemoryStore implements Store {
     if (!room) {
       return [];
     }
-    return room.chats
+    // Find out if there is a better way to do this.
+    return Object.values(room.chats)
       .reverse()
       .slice(0, offset)
       .slice(-1 * limit);
@@ -46,24 +49,24 @@ export class InMemoryStore implements Store {
       message,
       upvotes: [],
     };
-    room.chats.push(chat);
+    room.chats[chat.id] = chat;
     return chat;
   }
 
   upvote(userId: UserId, roomId: string, chatId: string) {
     const room = this.store.get(roomId);
-    if (!room) {
+
+    const chat = room.chats[chatId];
+
+    if (room.roomId !== roomId) {
       return;
     }
-    // Todo: Make this faster
-    const chat = room.chats.find(({ id }) => id == chatId);
 
-    if (chat) {
-      if (chat.upvotes.find((x) => x === userId)) {
-        return chat;
-      }
-      chat.upvotes.push(userId);
+    if (chat.upvotes.find((x) => x === userId)) {
+      return chat;
     }
+    chat.upvotes.push(userId);
+
     return chat;
   }
 }
